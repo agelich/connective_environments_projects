@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Basic Page Needs–– -->
+  <meta charset="utf-8">
+  <title>Connective Environments Home</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- Mobile Specific Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- FONT -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/customize.css">
+  <style>
+  #map_1,#map_2,#map_3 {
+    height: 500px;
+  }
+  </style>
+
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/favicon.png">
+
+</head>
+<body>
+
+  <div class="container one-bottom" style="margin-top: 50px">
+    <div class="ten columns">
+      <h2>Connective Environments, Fall 2021</h2>
+      <p>
+        ARCH4050/6306: Tuesdays 2pm-5:15pm
+        <br>
+        Dr. Dimitris Papanikolaou | dpapanik@uncc.edu | Urban Synergetics Lab | https://urbansynergeticslab.net
+      </p>
+    </div>
+    <div class="two columns">
+      <a href="https://urbansynergeticslab.net/"><img class="scale-with-grid" src="img/LabLogo_dark_cropped.png"></a>
+    </div>
+  </div>
+
+
+  <div class="container one-bottom" style="margin-top: 50px">
+    <div class="twelve columns">
+      <h3>Connective Enironments Introduction</h3>
+     <p style="text-align:justify">This class consisted of 3 parts. The disassembly and anlysis of a toy car flywheel. Bells with nand gates and inflatables. </p>
+    </div>
+  </div>
+
+  <div class="container one-bottom" >
+    
+    <h3>ANNA GELICH</h3>
+    <h5> ANNA GELICH Car deconstruction, photography, design layout and discriptions.</h5>
+  
+    <h3>SAGE DUFFEY</h3>
+    <h5>SAGE DUFFEY Liason Graph, Adjancency Matrics, Car deconstruction.</h5>
+   
+  </div>
+
+
+
+  <script>
+
+  L.mapbox.accessToken = 'pk.eyJ1IjoiZGltcCIsImEiOiJkRnlra3RjIn0.E9CTYzNUEx0yb3dcfV4SiA';
+
+  var map_1 = L.mapbox.map('map_1')
+  .setView([40, -74.50], 9)
+  .addLayer(L.mapbox.styleLayer('mapbox://styles/dimp/citf6n01300692hmlxnnrv6wd'));
+  map_1
+  .scrollWheelZoom.disable();
+
+
+  d3.json("https://api.citybik.es/v2/networks/ford-gobike", function(data) {
+    console.log(data);
+
+    var map_2 = L.mapbox.map('map_2')
+    .setView([data.network.location.latitude, data.network.location.longitude], 10)
+    .addLayer(L.mapbox.styleLayer('mapbox://styles/dimp/citf6n01300692hmlxnnrv6wd'));
+    map_2
+    .scrollWheelZoom.disable();
+
+    data.network.stations.forEach(function(station){
+      station.lat = +station.latitude;
+      station.lng = +station.longitude;
+      var path_options = {
+        radius :  2,
+        color : d3.rgb(88,206,227).brighter(),
+        stroke: true,
+        weight : 1,
+      };
+      L.circleMarker([station.latitude, station.longitude], path_options).addTo(map_2);
+    });
+
+    var map_3 = L.mapbox.map('map_3')
+    .setView([data.network.location.latitude, data.network.location.longitude], 11)
+    .addLayer(L.mapbox.styleLayer('mapbox://styles/dimp/ck9mf0x8q3o521iojo2qmmp52'));
+    map_3
+    .scrollWheelZoom.disable();
+
+    data.network.stations.forEach(function(station){
+      station.lat = +station.latitude;
+      station.lng = +station.longitude;
+      var inventory_level = station.free_bikes / (station.free_bikes+station.empty_slots);
+      var path_options = {
+        radius :  0.14 * (station.free_bikes + station.empty_slots),
+        color : d3.rgb(88,206,227).brighter(),
+        fillColor : (function(){
+          return inventory_level > 0.5? d3.rgb(88,206,227) : d3.rgb(88,206,227).darker(2)
+        })(),
+        stroke: true,
+        weight : 1,
+        opacity : 1,
+        fillOpacity : 0.8
+      };
+      L.circleMarker([station.latitude, station.longitude], path_options).addTo(map_3);
+    });
+  });
+
+
+
+
+  </script>
+
+
+</body>
+</html>
+© 2021 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
+Loading complete
